@@ -12,6 +12,8 @@ fi
 
 function mostrar_menu() {
     clear
+    
+    # Colores y estilo para el menú
     titulo=$(tput setaf 2)   # Color verde
     rojo=$(tput setaf 1)     # Color rojo
     normal=$(tput sgr0)      # Restaurar color por defecto
@@ -30,7 +32,7 @@ function mostrar_menu() {
     echo "${negrita}${rojo}10. ${normal}Buscar por nombre o categoría"
     echo "${negrita}${rojo}11. ${normal}Realizar una copia de seguridad de un script"
     echo "${negrita}${rojo}12. ${normal}Salir"
-    echo "-----------------"
+    echo "${titulo}-----------------${normal}"
 }
 
 # Función para cargar un script y darle permisos de ejecución
