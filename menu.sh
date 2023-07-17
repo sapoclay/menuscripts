@@ -12,10 +12,12 @@ fi
 
 function mostrar_menu() {
     clear
-    
+
     # Colores y estilo para el menú
     titulo=$(tput setaf 2)   # Color verde
     rojo=$(tput setaf 1)     # Color rojo
+    amarillo=$(tput setaf 3)   # Color amarillo
+    azul=$(tput setaf 4)     # Color azul
     normal=$(tput sgr0)      # Restaurar color por defecto
     negrita=$(tput bold)     # Texto en negrita
 
@@ -37,201 +39,201 @@ function mostrar_menu() {
 
 # Función para cargar un script y darle permisos de ejecución
 function cargar_script() {
-    read -p "Escribe la ruta del script a cargar: " ruta_script
+    read -p "${negrita}${amarillo}Escribe la ruta del script a cargar: ${normal}" ruta_script
     if [ -f "$ruta_script" ]; then
         if [ -x "$ruta_script" ]; then
             echo "$ruta_script ya tiene permisos de ejecución."
         else
             chmod +x "$ruta_script"
-            echo "Permisos de ejecución asignados a $ruta_script."
+            echo "${titulo}Permisos de ejecución asignados a $ruta_script.${normal}"
         fi
         echo "$ruta_script" >> "$ruta_archivo"
-        echo "Script cargado con éxito"
+        echo "${titulo}Script cargado con éxito${normal}"
     else
-        echo "El archivo no existe o no es un script válido."
+        echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
     fi
 }
 
 # Función para editar un script
 function editar_script() {
-    echo "----- Lista de Scripts Cargados -----"
+    echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
     cat -n "$ruta_archivo"
-    echo "-------------------------------------"
-    read -p "Escribe el número del script a editar: " num_script
+    echo "${titulo}-------------------------------------${normal}"
+    read -p "${negrita}${amarillo}Escribe el número del script a editar: ${normal}" num_script
     ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
     if [ -f "$ruta_script" ]; then
         gedit "$ruta_script"
     else
-        echo "El archivo no existe o no es un script válido."
+        echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
     fi
 }
 
 # Función para ejecutar un script
 function ejecutar_script() {
-    echo "----- Lista de Scripts Cargados -----"
+    echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
     cat -n "$ruta_archivo"
-    echo "-------------------------------------"
-    read -p "Escribe el número del script a ejecutar: " num_script
+    echo "${titulo}-------------------------------------${normal}"
+    read -p "${negrita}${amarillo}Escribe el número del script a ejecutar: ${normal}" num_script
     ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
     if [ -f "$ruta_script" ]; then
-        read -p "Escribe los parámetros para el script (si es necesario. De lo contrario pulsa Intro): " parametros
+        read -p "${negrita}${amarillo}Escribe los parámetros para el script (si es necesario. De lo contrario pulsa Intro): ${normal}" parametros
         bash "$ruta_script" $parametros
     else
-        echo "El archivo no existe o no es un script válido."
+        echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
     fi
 }
 
 # Función para ver la lista de scripts cargados y sus categorías
 function ver_lista_scripts() {
     if [ -s "$ruta_categorias" ]; then
-        echo "----- Lista de Scripts Cargados y sus Categorías -----"
+        echo "${titulo}----- Lista de Scripts Cargados y sus Categorías -----${normal}"
         while IFS=':' read -r script categoria; do
             if [ -n "$script" ]; then
                 if [ -n "$categoria" ]; then
-                    echo "Categoría: $categoria - Script: $script"
+                    echo "${titulo}Categoría: $categoria ${normal} - ${titulo}Script: $script ${normal}"
                 else
-                    echo "Sin categoría - Script: $script"
+                    echo "${negrita}${rojo} Sin categoría ${normal} - ${titulo}Script: $script ${normal}"
                 fi
             else
                 if [ -n "$categoria" ]; then
-                    echo "Categoría: $categoria - Sin scripts asociados"
+                    echo "Categoría: $categoria - ${negrita}${rojo}Sin scripts asociados${normal}"
                 fi
             fi
         done < "$ruta_categorias"
-        echo "-----------------------------------------------------"
+        echo "${titulo}-----------------------------------------------------${normal}"
     else
-        echo "No hay scripts con categorías asignadas."
+        echo "${negrita}${rojo}No hay scripts con categorías asignadas.${normal}"
     fi
 }
 
 # Función para eliminar un script y su ruta del archivo
 function eliminar_script() {
     if [ -s "$ruta_archivo" ]; then
-        echo "----- Lista de Scripts Cargados -----"
+        echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
         cat -n "$ruta_archivo"
-        echo "-------------------------------------"
-        read -p "Escribe el número del script a eliminar: " num_script
+        echo "${titulo}-------------------------------------${normal}"
+        read -p "${negrita}${amarillo}Escribe el número del script a eliminar: ${normal}" num_script
         ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
         if [ -f "$ruta_script" ]; then
             rm "$ruta_script"
             sed -i "${num_script}d" "$ruta_archivo"
             sed -i "/^$ruta_script:/d" "$ruta_categorias"
-            echo "Script eliminado y ruta eliminada del archivo."
+            echo "${titulo}Script y ruta eliminados correctamente.${normal}"
         else
-            echo "El archivo no existe o no es un script válido."
+            echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
         fi
     else
-        echo "La lista está vacía. Carga algunos scripts primero."
+        echo "${negrita}${rojo}La lista está vacía. Carga algunos scripts primero.${normal}"
     fi
 }
 
 # Función para copiar un script a otra ubicación y cambiar su nombre
 function copiar_script() {
     if [ -s "$ruta_archivo" ]; then
-        echo "----- Lista de Scripts Cargados -----"
+        echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
         cat -n "$ruta_archivo"
-        echo "-------------------------------------"
-        read -p "Escribe el número del script a copiar: " num_script
+        echo "${titulo}-------------------------------------${normal}"
+        read -p "${negrita}${amarillo}Escribe el número del script a copiar:${normal} " num_script
         ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
         if [ -f "$ruta_script" ]; then
-            read -p "Escribe la ruta y el nombre nuevo para el script: " ruta_nueva_script
+            read -p "${negrita}${amarillo}Escribe la ruta y el nombre nuevo para el script: ${normal}" ruta_nueva_script
             cp "$ruta_script" "$ruta_nueva_script"
             echo "$ruta_nueva_script" >> "$ruta_archivo"
-            echo "Script copiado correctamente en la ruta $ruta_nueva_script."
+            echo "${titulo}Script copiado correctamente en la ruta $ruta_nueva_script.${normal}"
         else
-            echo "El archivo no existe o no es un script válido."
+            echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
         fi
     else
-        echo "La lista está vacía. Carga algunos scripts primero."
+        echo "${negrita}${rojo}La lista está vacía. Carga algunos scripts primero.${normal}"
     fi
 }
 
 # Función para editar rutas
 function editar_rutas() {
     if [ -s "$ruta_archivo" ]; then
-        echo "----- Lista de Scripts Cargados -----"
+        echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
         cat -n "$ruta_archivo"
-        echo "-------------------------------------"
-        read -p "Escribe el número del script cuya ruta quieres modificar: " num_script
+        echo "${titulo}-------------------------------------${normal}"
+        read -p "${negrita}${amarillo}Escribe el número del script cuya ruta quieres modificar: ${normal}" num_script
         ruta_script_antigua=$(sed -n "${num_script}p" "$ruta_archivo")
         
-        read -p "Escribe la nueva ruta para el script: " ruta_script_nueva
+        read -p "${negrita}${amarillo}Escribe la nueva ruta para el script: ${normal}" ruta_script_nueva
         if [ -f "$ruta_script_antigua" ]; then
             mv "$ruta_script_antigua" "$ruta_script_nueva"
             sed -i "${num_script}s|$ruta_script_antigua|$ruta_script_nueva|" "$ruta_archivo"
-            echo "Ruta actualizada correctamente en $ruta_script_nueva"
+            echo "${titulo}Ruta actualizada correctamente en $ruta_script_nueva ${normal}"
         else
-            echo "El archivo no existe o no es un script válido."
+            echo "${negrita}${rojo}El archivo no existe o no es un script válido. ${normal}"
         fi
     else
-        echo "La lista está vacía. Carga algunos scripts primero."
+        echo "${negrita}${rojo}La lista está vacía. Carga algunos scripts primero. ${normal}"
     fi
 }
 
 # Función para ver la lista de categorías y los archivos asociados
 function ver_lista_categorias() {
     if [ -s "$ruta_categorias" ]; then
-        echo "----- Lista de Categorías y Scripts -----"
+        echo "${titulo}----- Lista de Categorías y Scripts ----- ${normal}"
         while IFS=':' read -r script categoria; do
             echo "Categoría: $categoria"
             echo "Scripts:"
             awk -F ':' -v cat="$categoria" '$2 == cat {print $1}' "$ruta_categorias"
-            echo "---------------------------------------"
+            echo "${titulo}---------------------------------------${normal}"
         done < "$ruta_categorias"
     else
-        echo "No hay categorías registradas."
+        echo "${negrita}${rojo}No hay categorías registradas.${normal}"
     fi
 }
 
 function agregar_categoria() {
-    read -p "Escribe el nombre de la categoría para crearla: " categoria
+    read -p "${negrita}${amarillo}Escribe el nombre de la categoría para crearla: ${normal}" categoria
     echo "$categoria" >> "$ruta_categorias"
-    echo "Categoría añadida correctamente."
+    echo "${titulo}Categoría añadida correctamente. ${normal}"
 }
 
 function asignar_categoria_a_script() {
     if [ -s "$ruta_archivo" ]; then
-        echo "----- Lista de Scripts Cargados -----"
+        echo "${titulo}----- Lista de Scripts Cargados -----${normal}"
         cat -n "$ruta_archivo"
-        echo "-------------------------------------"
-        read -p "Escribe el número del script al que quieres asignar una categoría: " num_script
+        echo "${titulo}-------------------------------------${normal}"
+        read -p "${negrita}${amarillo}Escribe el número del script al que quieres asignar una categoría: ${normal}" num_script
         ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
         if [ -f "$ruta_script" ]; then
-            echo "----- Lista de Categorías -----"
+            echo "${titulo}----- Lista de Categorías -----${normal}"
             cat -n "$ruta_categorias"
-            echo "--------------------------------"
-            read -p "Escribe el número de la categoría que quieres asignar al script: " num_categoria
+            echo "${titulo}--------------------------------${normal}"
+            read -p "${negrita}${amarillo}Escribe el número de la categoría que quieres asignar al script: ${normal}" num_categoria
             categoria=$(sed -n "${num_categoria}p" "$ruta_categorias")
             echo "$ruta_script:$categoria" >> "$ruta_categorias"
-            echo "Categoría asignada correctamente al script."
+            echo "${titulo}Categoría asignada correctamente al script.${normal}"
         else
-            echo "El archivo no existe o no es un script válido."
+            echo "${negrita}${rojo}El archivo no existe o no es un script válido.${normal}"
         fi
     else
-        echo "La lista está vacía. Carga algunos scripts primero."
+        echo "${negrita}${rojo}La lista está vacía. Carga algunos scripts primero.${normal}"
     fi
 }
 
 # Función para buscar por nombre o categoría
 function buscar_scripts() {
-    read -p "Escribe el nombre o categoría a buscar: " busqueda
+    read -p "${negrita}${amarillo}Escribe el nombre o categoría a buscar:${normal} " busqueda
     if [ -s "$ruta_categorias" ]; then
-        echo "----- Resultados de la búsqueda -----"
+        echo "${titulo}----- Resultados de la búsqueda -----${normal}"
         grep -i "$busqueda" "$ruta_categorias" | while read -r line; do
             categoria=$(echo "$line" | cut -d':' -f2)
             script=$(echo "$line" | cut -d':' -f1)
             echo "Categoría: $categoria - Script: $script"
         done
-        echo "--------------------------------------"
+        echo "${titulo}--------------------------------------${normal}"
     else
-        echo "No hay scripts con categorías asignadas."
+        echo "${negrita}${rojo}No hay scripts con categorías asignadas.${normal}"
     fi
 }
 
 # Main
 while true; do
     mostrar_menu
-    read -p "Escribe una opción: " opcion
+    read -p "${negrita}${amarillo}Escribe una opción:${normal} " opcion
 
     case $opcion in
         1) cargar_script;;
@@ -245,10 +247,10 @@ while true; do
         9) asignar_categoria_a_script;;
         10) buscar_scripts;;
         11) copiar_script;;
-        12) echo "PROGRAMA TERMINADO!!"; break;;
-        *) echo "Opción inválida. Selecciona una opción del menú.";;
+        12) echo "${titulo}PROGRAMA TERMINADO!!${normal}"; break;;
+        *) echo "${negrita}${rojo}Opción inválida. Selecciona una opción del menú.${normal}";;
     esac
 
-    echo "Pulsa Intro para continuar..."
+    echo "${negrita}${azul}Pulsa Intro para continuar...${normal}"
     read -s
 done
