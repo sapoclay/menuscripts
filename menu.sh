@@ -245,7 +245,7 @@ while true; do
         9) asignar_categoria_a_script;;
         10) buscar_scripts;;
         11) copiar_script;;
-        12) echo "¡Hasta luego!"; break;;
+        12) echo "PROGRAMA TERMINADO!!"; break;;
         *) echo "Opción inválida. Selecciona una opción del menú.";;
     esac
 
