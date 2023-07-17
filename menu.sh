@@ -28,7 +28,8 @@ function mostrar_menu() {
     echo "${negrita}${rojo}8. ${normal}Agregar categoría"
     echo "${negrita}${rojo}9. ${normal}Asignar categoría a script"
     echo "${negrita}${rojo}10. ${normal}Buscar por nombre o categoría"
-    echo "${negrita}${rojo}11. ${normal}Salir"
+    echo "${negrita}${rojo}11. ${normal}Realizar copia de seguridad de un script"
+    echo "${negrita}${rojo}12. ${normal}Salir"
     echo "-----------------"
 }
 
@@ -77,6 +78,7 @@ function ejecutar_script() {
         echo "El archivo no existe o no es un script válido."
     fi
 }
+
 # Función para ver la lista de scripts cargados y sus categorías
 function ver_lista_scripts() {
     if [ -s "$ruta_categorias" ]; then
@@ -120,6 +122,28 @@ function eliminar_script() {
         echo "La lista está vacía. Cargue algunos scripts primero."
     fi
 }
+
+# Función para copiar un script a otra ubicación y cambiar su nombre
+function copiar_script() {
+    if [ -s "$ruta_archivo" ]; then
+        echo "----- Lista de Scripts Cargados -----"
+        cat -n "$ruta_archivo"
+        echo "-------------------------------------"
+        read -p "Ingrese el número del script a copiar: " num_script
+        ruta_script=$(sed -n "${num_script}p" "$ruta_archivo")
+        if [ -f "$ruta_script" ]; then
+            read -p "Ingrese la ruta y nombre nuevo para el script: " ruta_nueva_script
+            cp "$ruta_script" "$ruta_nueva_script"
+            echo "$ruta_nueva_script" >> "$ruta_archivo"
+            echo "Script copiado exitosamente a $ruta_nueva_script."
+        else
+            echo "El archivo no existe o no es un script válido."
+        fi
+    else
+        echo "La lista está vacía. Cargue algunos scripts primero."
+    fi
+}
+
 # Función para editar rutas
 function editar_rutas() {
     if [ -s "$ruta_archivo" ]; then
@@ -218,7 +242,8 @@ while true; do
         8) agregar_categoria;;
         9) asignar_categoria_a_script;;
         10) buscar_scripts;;
-        11) echo "¡Hasta luego!"; break;;
+        11) copiar_script;;
+        12) echo "¡Hasta luego!"; break;;
         *) echo "Opción inválida, intente nuevamente.";;
     esac
 
