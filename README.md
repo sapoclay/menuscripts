@@ -1,4 +1,4 @@
-# menuscripts
+# Un menú básico para scripts creados con bash
 
 Este es un pequeño menú creado con bash. Desde este el usuario podrá editar, categorizar, realizar copias de seguridad o lanzar los scripts creados con bash.
 
