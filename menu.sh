@@ -83,23 +83,27 @@ function ejecutar_script() {
     fi
 }
 
-# Función para ver la lista de scripts cargados y sus categorías
+# Función para ver los scripts y sus categorías
 function ver_lista_scripts() {
     if [ -s "$ruta_categorias" ]; then
         echo "${titulo}----- Lista de Scripts Cargados y sus Categorías -----${normal}"
+        categorias_sin_scripts=()
+
         while IFS=':' read -r script categoria; do
             if [ -n "$script" ]; then
                 if [ -n "$categoria" ]; then
                     echo "${titulo}Categoría: $categoria ${normal} - ${titulo}Script: $script ${normal}"
                 else
-                    echo "${negrita}${rojo} Sin categoría ${normal} - ${titulo}Script: $script ${normal}"
-                fi
-            else
-                if [ -n "$categoria" ]; then
-                    echo "Categoría: $categoria - ${negrita}${rojo}Sin scripts asociados${normal}"
+                    categorias_sin_scripts+=("$script")
                 fi
             fi
         done < "$ruta_categorias"
+
+        # Mostrar las categorías sin scripts asociados
+       #  for categoria in "${categorias_sin_scripts[@]}"; do
+       #      echo "${negrita}${rojo}Sin categoría ${normal} - ${titulo}Script: $categoria ${normal}"
+       #  done
+
         echo "${titulo}-----------------------------------------------------${normal}"
     else
         echo "${negrita}${rojo}No hay scripts con categorías asignadas.${normal}"
