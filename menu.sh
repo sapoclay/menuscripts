@@ -180,7 +180,7 @@ function ver_lista_categorias() {
         echo "${titulo}----- Lista de Categorías y Scripts ----- ${normal}"
         while IFS=':' read -r script categoria; do
             echo "Categoría: $categoria"
-            echo "Scripts:"
+            echo "Script:"
             awk -F ':' -v cat="$categoria" '$2 == cat {print $1}' "$ruta_categorias"
             echo "${titulo}---------------------------------------${normal}"
         done < "$ruta_categorias"
